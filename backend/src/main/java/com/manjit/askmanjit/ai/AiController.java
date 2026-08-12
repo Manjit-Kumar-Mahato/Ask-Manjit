@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AiController {
 
-	private final AiService aiService;
+    private final AiService aiService;
 
-	@PostMapping("/ask")
-	public String ask(@RequestBody AiRequest request) {
-		return aiService.ask(request.getQuestion());
-	}
+    @PostMapping("/ask")
+    public String ask(@RequestBody AiRequest request) {
+        return aiService.ask(request.getQuestion());
+    }
 }

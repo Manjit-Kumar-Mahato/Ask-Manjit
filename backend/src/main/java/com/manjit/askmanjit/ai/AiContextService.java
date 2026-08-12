@@ -68,7 +68,8 @@ public class AiContextService {
 
 		// Skills
 		if (lowerQuestion.contains("skill") || lowerQuestion.contains("technology")
-				|| lowerQuestion.contains("tech stack")) {
+				|| lowerQuestion.contains("tech stack") || lowerQuestion.contains("programming")
+				|| lowerQuestion.contains("language") || lowerQuestion.contains("languages")) {
 			List<Skill> skills = skillService.getAllSkills();
 			context.append("SKILLS:\n");
 			for (Skill skill : skills) {
