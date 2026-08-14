@@ -9,6 +9,8 @@ import com.manjit.askmanjit.entity.Knowledge;
 public interface KnowledgeRepository extends JpaRepository<Knowledge, Long> {
 
     List<Knowledge> findByActiveTrue();
-    
+
     List<Knowledge> findByCategoryAndActiveTrue(String category);
+
+    List<Knowledge> findByTopicContainingIgnoreCaseAndActiveTrue(String topic);
 }

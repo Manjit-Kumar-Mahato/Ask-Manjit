@@ -13,13 +13,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KnowledgeService {
 
-	private final KnowledgeRepository knowledgeRepository;
+    private final KnowledgeRepository knowledgeRepository;
 
-	public List<Knowledge> getAllActiveKnowledge() {
-	    return knowledgeRepository.findByActiveTrue();
-	}
-	
-	public List<Knowledge> getKnowledgeByCategory(String category) {
-	    return knowledgeRepository.findByCategoryAndActiveTrue(category);
-	}
+    public List<Knowledge> getAllActiveKnowledge() {
+        return knowledgeRepository.findByActiveTrue();
+    }
+
+    public List<Knowledge> getKnowledgeByCategory(String category) {
+        return knowledgeRepository.findByCategoryAndActiveTrue(category);
+    }
+
+    public List<Knowledge> searchKnowledgeByTopic(String topic) {
+        return knowledgeRepository
+                .findByTopicContainingIgnoreCaseAndActiveTrue(topic);
+    }
 }

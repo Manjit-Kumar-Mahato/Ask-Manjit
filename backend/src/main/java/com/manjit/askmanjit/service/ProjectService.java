@@ -19,11 +19,15 @@ public class ProjectService {
 		return projectRepository.findAll();
 	}
 
-	public Project getProjectById(Long id) {
-		return projectRepository.findById(id).orElse(null);
+	public List<Project> getFeaturedProjects() {
+		return projectRepository.findByFeaturedTrueOrderByDisplayOrderAsc();
 	}
-	
-	public Project createProject(Project project) {
-	    return projectRepository.save(project);
+
+	public Project getProjectByName(String name) {
+		return projectRepository.findByNameIgnoreCase(name).orElse(null);
+	}
+
+	public List<Project> getTopProjects(int limit) {
+		return projectRepository.findByFeaturedTrueOrderByDisplayOrderAsc().stream().limit(limit).toList();
 	}
 }

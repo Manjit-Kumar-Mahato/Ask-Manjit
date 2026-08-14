@@ -24,14 +24,4 @@ public class ProjectController {
 	public List<Project> getAllProjects() {
 		return projectService.getAllProjects();
 	}
-
-	@GetMapping("/{id}")
-	public Project getProjectById(@PathVariable Long id) {
-		return projectService.getProjectById(id);
-	}
-	
-	@PostMapping
-	public Project createProject(@RequestBody Project project) {
-	    return projectService.createProject(project);
-	}
 }
