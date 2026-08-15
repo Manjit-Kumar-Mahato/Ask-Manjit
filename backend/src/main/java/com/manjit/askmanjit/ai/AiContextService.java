@@ -42,45 +42,43 @@ public class AiContextService {
 		}
 
 		// ---------------- PROJECTS ----------------
-
 		if (containsAny(lowerQuestion, "project", "projects", "built", "build", "created", "developed", "development",
 				"application", "applications", "work", "worked")) {
-			// BEST / GOOD / FEATURED PROJECTS
-			if (containsAny(lowerQuestion, "best project", "best projects", "good project", "good projects",
-					"top project", "top projects", "featured project", "featured projects", "notable project",
-					"notable projects")) {
-				List<Project> projects = projectService.getTopProjects(4);
-				appendProjects(context, projects);
-			}
-			// ALL PROJECTS
-			else if (containsAny(lowerQuestion, "all projects", "every project", "every projects", "complete list",
-					"all of his projects", "all of manjit's projects")) {
+			// 1. ALL PROJECTS
+			if (containsAny(lowerQuestion, "all projects", "every project", "all of his projects",
+					"all of manjit's projects", "complete list of projects", "complete projects")) {
 				List<Project> projects = projectService.getAllProjects();
 				appendProjects(context, projects);
 			}
-			// NORMAL PROJECT QUESTION
-			else if (containsAny(lowerQuestion, "what projects", "which projects", "list projects", "projects has",
-					"projects have", "his projects", "manjit's projects", "tell me about his projects",
-					"tell me about manjit's projects")) {
-				List<Project> projects = projectService.getFeaturedProjects();
+			// 2. SPECIFIC PROJECT
+			else if (containsAny(lowerQuestion, "e-notes", "enotes", "notes api")) {
+				appendProjectDetails("E-Notes REST API", "e-notes-api-service", context);
+			} else if (containsAny(lowerQuestion, "e-commerce", "ecommerce", "shopping app", "shopping website")) {
+				appendProjectDetails("Spring Boot E-Commerce Application", "spring-boot-ecommerce", context);
+			} else if (containsAny(lowerQuestion, "expense tracker")) {
+				appendProjectDetails("Online Expense Tracker", "online-expense-tracker", context);
+			} else if (containsAny(lowerQuestion, "stellar", "prediction dashboard")) {
+				appendProjectDetails("Stellar Prediction Dashboard", "stellar-prediction-dashboard", context);
+			} else if (lowerQuestion.contains("banking")) {
+				appendProjectDetails("Banking Management System", "banking-management-system", context);
+			} else if (lowerQuestion.contains("hospital management")) {
+				appendProjectDetails("Hospital Management System", "hospital-management-system-web", context);
+			}
+			// 3. NUMBER OF PROJECTS REQUESTED
+			else if (containsProjectCount(lowerQuestion)) {
+				int count = getRequestedProjectCount(lowerQuestion);
+				List<Project> projects = projectService.getTopProjects(count);
 				appendProjects(context, projects);
 			}
-
-			// SPECIFIC PROJECT
+			// 4. BEST / TOP / GOOD WITHOUT A NUMBER
+			else if (containsAny(lowerQuestion, "best", "top", "good", "featured", "notable")) {
+				List<Project> projects = projectService.getTopProjects(4);
+				appendProjects(context, projects);
+			}
+			// 5. NORMAL PROJECT QUESTION
 			else {
-				if (containsAny(lowerQuestion, "e-notes", "enotes", "notes api")) {
-					appendProjectDetails("E-Notes REST API", "e-notes-api-service", context);
-				} else if (containsAny(lowerQuestion, "e-commerce", "ecommerce", "shopping app", "shopping website")) {
-					appendProjectDetails("Spring Boot E-Commerce Application", "spring-boot-ecommerce", context);
-				} else if (containsAny(lowerQuestion, "expense tracker")) {
-					appendProjectDetails("Online Expense Tracker", "online-expense-tracker", context);
-				} else if (containsAny(lowerQuestion, "stellar", "prediction dashboard")) {
-					appendProjectDetails("Stellar Prediction Dashboard", "stellar-prediction-dashboard", context);
-				} else if (lowerQuestion.contains("banking")) {
-					appendProjectDetails("Banking Management System", "banking-management-system", context);
-				} else if (lowerQuestion.contains("hospital management")) {
-					appendProjectDetails("Hospital Management System", "hospital-management-system-web", context);
-				}
+				List<Project> projects = projectService.getFeaturedProjects();
+				appendProjects(context, projects);
 			}
 		}
 
@@ -116,8 +114,7 @@ public class AiContextService {
 				"e-commerce", "ecommerce", "shopping app", "shopping website", "shopping web", "expense tracker",
 				"hospital management", "stellar", "prediction dashboard", "banking system", "banking",
 				"competitive programming", "competitive programming experience", "backend development",
-				"backend experience", "about manjit")) {
-
+				"backend experience", "about manjit","academy","journey","academic")) {
 			List<Knowledge> knowledge = knowledgeService.searchKnowledgeByTopic(getKnowledgeTopic(lowerQuestion));
 			if (!knowledge.isEmpty()) {
 				context.append("KNOWLEDGE:\n");
@@ -128,6 +125,47 @@ public class AiContextService {
 			}
 		}
 		return context.toString();
+	}
+
+	private boolean containsProjectCount(String question) {
+		return question.matches(".*\\b\\d+\\s+projects?\\b.*") || question.matches(".*\\bprojects?\\s+\\d+\\b.*")
+				|| containsAny(question, "one project", "two projects", "three projects", "four projects",
+						"five projects", "six projects");
+	}
+
+	private int getRequestedProjectCount(String question) {
+		// Numeric: 2 projects
+		java.util.regex.Pattern numericPattern = java.util.regex.Pattern.compile("\\b(\\d+)\\s+projects?\\b");
+		java.util.regex.Matcher numericMatcher = numericPattern.matcher(question);
+		if (numericMatcher.find()) {
+			return Integer.parseInt(numericMatcher.group(1));
+		}
+		// Numeric: projects 2
+		java.util.regex.Pattern reverseNumericPattern = java.util.regex.Pattern.compile("\\bprojects?\\s+(\\d+)\\b");
+		java.util.regex.Matcher reverseMatcher = reverseNumericPattern.matcher(question);
+		if (reverseMatcher.find()) {
+			return Integer.parseInt(reverseMatcher.group(1));
+		}
+		// Words
+		if (question.contains("one project")) {
+			return 1;
+		}
+		if (question.contains("two projects")) {
+			return 2;
+		}
+		if (question.contains("three projects")) {
+			return 3;
+		}
+		if (question.contains("four projects")) {
+			return 4;
+		}
+		if (question.contains("five projects")) {
+			return 5;
+		}
+		if (question.contains("six projects")) {
+			return 6;
+		}
+		return 4;
 	}
 
 	private void appendProjects(StringBuilder context, List<Project> projects) {

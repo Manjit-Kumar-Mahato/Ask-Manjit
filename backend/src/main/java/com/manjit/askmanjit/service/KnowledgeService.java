@@ -13,18 +13,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KnowledgeService {
 
-    private final KnowledgeRepository knowledgeRepository;
+	private final KnowledgeRepository knowledgeRepository;
 
-    public List<Knowledge> getAllActiveKnowledge() {
-        return knowledgeRepository.findByActiveTrue();
-    }
+	private final EmbeddingService embeddingService;
 
-    public List<Knowledge> getKnowledgeByCategory(String category) {
-        return knowledgeRepository.findByCategoryAndActiveTrue(category);
-    }
+	public List<Knowledge> getAllActiveKnowledge() {
+		return knowledgeRepository.findByActiveTrue();
+	}
 
-    public List<Knowledge> searchKnowledgeByTopic(String topic) {
-        return knowledgeRepository
-                .findByTopicContainingIgnoreCaseAndActiveTrue(topic);
-    }
+	public List<Knowledge> getKnowledgeByCategory(String category) {
+		return knowledgeRepository.findByCategoryAndActiveTrue(category);
+	}
+
+	public List<Knowledge> searchKnowledgeByTopic(String topic) {
+		return knowledgeRepository.findByTopicContainingIgnoreCaseAndActiveTrue(topic);
+	}
+
+	public List<Knowledge> searchSimilarKnowledge(String question, int limit) {
+		float[] queryEmbedding = embeddingService.generateQueryEmbedding(question);
+		String vector = embeddingService.toVectorString(queryEmbedding);
+		return knowledgeRepository.findSimilarKnowledge(vector, limit);
+	}
 }
