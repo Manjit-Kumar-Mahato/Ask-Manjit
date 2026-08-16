@@ -21,8 +21,10 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long> {
 			FROM knowledge
 			WHERE active = true
 			  AND embedding IS NOT NULL
+			  AND embedding <=> CAST(:embedding AS vector) < :threshold
 			ORDER BY embedding <=> CAST(:embedding AS vector)
 			LIMIT :limit
 			""", nativeQuery = true)
-	List<Knowledge> findSimilarKnowledge(@Param("embedding") String embedding, @Param("limit") int limit);
+	List<Knowledge> findSimilarKnowledge(@Param("embedding") String embedding, @Param("limit") int limit,
+			@Param("threshold") double threshold);
 }

@@ -30,8 +30,8 @@ public class KnowledgeService {
 	}
 
 	public List<Knowledge> searchSimilarKnowledge(String question, int limit) {
-		float[] queryEmbedding = embeddingService.generateQueryEmbedding(question);
-		String vector = embeddingService.toVectorString(queryEmbedding);
-		return knowledgeRepository.findSimilarKnowledge(vector, limit);
+	    float[] queryEmbedding = embeddingService.generateQueryEmbedding(question);
+	    String vector = embeddingService.toVectorString(queryEmbedding);
+	    return knowledgeRepository.findSimilarKnowledge(vector, limit, 0.65);
 	}
 }
