@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.manjit.askmanjit.dto.KnowledgeSearchResult;
 import com.manjit.askmanjit.entity.Knowledge;
 import com.manjit.askmanjit.repository.KnowledgeRepository;
 
@@ -30,8 +31,8 @@ public class KnowledgeService {
 	}
 
 	public List<Knowledge> searchSimilarKnowledge(String question, int limit) {
-	    float[] queryEmbedding = embeddingService.generateQueryEmbedding(question);
-	    String vector = embeddingService.toVectorString(queryEmbedding);
-	    return knowledgeRepository.findSimilarKnowledge(vector, limit, 0.65);
+		float[] queryEmbedding = embeddingService.generateQueryEmbedding(question);
+		String vector = embeddingService.toVectorString(queryEmbedding);
+		return knowledgeRepository.findSimilarKnowledge(vector, limit, 0.65);
 	}
 }

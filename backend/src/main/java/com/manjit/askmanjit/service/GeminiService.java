@@ -14,7 +14,7 @@ public class GeminiService {
 	private final Client client;
 
 	public String askGemini(String question) {
-		GenerateContentResponse response = client.models.generateContent("gemini-3.6-flash", question, null);
+		GenerateContentResponse response = client.models.generateContent("gemini-3.5-flash-lite", question, null);
 		return response.text();
 	}
 }
